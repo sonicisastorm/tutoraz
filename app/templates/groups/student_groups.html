@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Qruplarım{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="font-display text-3xl text-ink">Qruplarım</h1>
+    <a href="{{ url_for('groups.join') }}" class="btn btn-primary">Kod ilə qoşul</a>
+  </div>
+
+  {% if memberships %}
+  <div class="grid sm:grid-cols-2 gap-4">
+    {% for m in memberships %}
+    {% if m.status == 'active' %}
+    <a href="{{ url_for('groups.detail', group_id=m.group.id) }}"
+       class="card p-5 hover:shadow-lift transition-shadow group">
+      <p class="font-semibold text-ink group-hover:text-accent transition-colors mb-1">{{ m.group.name }}</p>
+      <p class="text-sm text-ink-60">{{ m.group.tutor.full_name }}</p>
+      {% if m.group.subject %}
+      <span class="tag tag-accent mt-3 inline-block">{{ m.group.subject.name }}</span>
+      {% endif %}
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card p-14 text-center text-ink-60">
+    <p class="text-4xl mb-3">🎓</p>
+    <p class="font-medium text-ink mb-2">Heç bir qrupa üzv deyilsiniz</p>
+    <p class="text-sm mb-5">Müəllimdən dəvət kodu alın.</p>
+    <a href="{{ url_for('groups.join') }}" class="btn btn-primary btn-sm">Kod ilə qoşul</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

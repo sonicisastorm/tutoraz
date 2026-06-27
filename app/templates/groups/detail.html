@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+
+  <!-- Back -->
+  <a href="{{ url_for('groups.index') }}" class="inline-flex items-center gap-1.5 text-sm text-ink-60 hover:text-ink mb-8">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Qruplara qayıt
+  </a>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+
+    <!-- Main info -->
+    <div class="lg:col-span-2 space-y-6">
+      <div class="card p-6">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <h1 class="font-display text-3xl text-ink">{{ group.name }}</h1>
+          {% if group.is_active %}
+          <span class="tag tag-green shrink-0">Aktiv</span>
+          {% else %}
+          <span class="tag shrink-0">Bağlı</span>
+          {% endif %}
+        </div>
+        <p class="text-sm text-ink-60 mb-4">
+          Müəllim: <span class="font-medium text-ink">{{ group.tutor.full_name }}</span>
+          {% if group.subject %}· {{ group.subject.name }}{% endif %}
+        </p>
+        {% if group.description %}
+        <p class="text-ink-60 leading-relaxed">{{ group.description }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Members -->
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="font-semibold text-ink">
+            Şagirdlər
+            <span class="text-ink-60 font-normal">{{ group.member_count }}/{{ group.max_students }}</span>
+          </h2>
+        </div>
+
+        {% set active_members = group.members | selectattr('status', 'equalto', 'active') | list %}
+        {% if active_members %}
+        <div class="divide-y divide-ink-10">
+          {% for member in active_members %}
+          <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+            <div class="flex items-center gap-3">
+              <div class="avatar-ring" style="width:2.25rem;height:2.25rem;font-size:0.875rem;">
+                {{ member.student.full_name[0].upper() }}
+              </div>
+              <div>
+                <p class="text-sm font-medium text-ink">{{ member.student.full_name }}</p>
+                <p class="text-xs text-ink-60">{{ member.joined_at.strftime('%d.%m.%Y') }} tarixindən</p>
+              </div>
+            </div>
+            {% if current_user.id == group.tutor_id %}
+            <form method="POST"
+              action="{{ url_for('groups.remove_student', group_id=group.id, student_id=member.student_id) }}"
+              onsubmit="return confirm('Bu şagirdi qrupdan çıxarmaq istəyirsiniz?')">
+              <button type="submit" class="btn btn-danger btn-sm">Çıxar</button>
+            </form>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8 text-ink-60">
+          <p class="text-2xl mb-2">👥</p>
+          <p class="text-sm">Hələ şagird yoxdur. Dəvət kodunu paylaşın.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-4">
+      <!-- Invite code -->
+      {% if current_user.id == group.tutor_id %}
+      <div class="card p-5">
+        <p class="text-xs text-ink-60 uppercase tracking-wide font-medium mb-3">Dəvət kodu</p>
+        <div class="bg-ink-10 rounded-lg p-3 text-center mb-3">
+          <p class="font-mono text-2xl font-bold text-accent tracking-wider">{{ group.invite_code }}</p>
+        </div>
+        <p class="text-xs text-ink-60 text-center">Bu kodu şagirdlərlə paylaşın.</p>
+        <button onclick="navigator.clipboard.writeText('{{ group.invite_code }}').then(()=>this.textContent='Kopyalandı ✓')"
+          class="btn btn-outline btn-sm w-full mt-3">Kopyala</button>
+      </div>
+      {% endif %}
+
+      <!-- Stats -->
+      <div class="card p-5">
+        <div class="grid grid-cols-2 gap-4 text-center">
+          <div>
+            <p class="text-2xl font-semibold text-ink">{{ group.member_count }}</p>
+            <p class="text-xs text-ink-60 mt-0.5">Şagird</p>
+          </div>
+          <div>
+            <p class="text-2xl font-semibold text-ink">{{ group.max_students }}</p>
+            <p class="text-xs text-ink-60 mt-0.5">Limit</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

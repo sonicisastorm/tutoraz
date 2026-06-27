@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Azərbaycanda Müəllim Tap{% endblock %}
+
+{% block content %}
+<!-- ── HERO ───────────────────────────────────────────────────────────── -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20">
+  <div class="grid lg:grid-cols-2 gap-12 items-center">
+    <div>
+      <p class="tag tag-accent mb-4">Bakı · Azerbaijan</p>
+      <h1 class="font-display text-5xl sm:text-6xl leading-tight text-ink mb-5">
+        Doğru müəllimi<br><em>asanlıqla tap.</em>
+      </h1>
+      <p class="text-ink-60 text-lg leading-relaxed mb-8 max-w-md">
+        DİM hazırlığı, əlavə dərslər, ixtisaslaşmış kurslar — bütün müəllimlər bir yerdə. Kənar şəbəkəyə ehtiyac yoxdur.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="{{ url_for('student.search') }}" class="btn btn-primary px-6 py-3 text-base">
+          Müəllim axtar
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="{{ url_for('auth.register') }}?role=tutor" class="btn btn-outline px-6 py-3 text-base">
+          Müəllim kimi qeydiyyat
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Quick search card -->
+    <div class="card p-6 shadow-lift">
+      <p class="text-sm font-medium text-ink-60 mb-4">Fənn üzrə axtarış</p>
+      <form action="{{ url_for('student.search') }}" method="get" class="space-y-3">
+        <input name="q" type="text" placeholder="Riyaziyyat, Kimya, İngilis dili..."
+          class="field" />
+        <div class="grid grid-cols-2 gap-3">
+          <select name="subject" class="field text-sm">
+            <option value="">Bütün fənlər</option>
+            {% for s in subjects %}
+              <option value="{{ s.id }}">{{ s.name }}</option>
+            {% endfor %}
+          </select>
+          <select name="mode" class="field text-sm">
+            <option value="">İstənilən format</option>
+            <option value="online">Onlayn</option>
+            <option value="inperson">Canlı</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Axtar</button>
+      </form>
+
+      <hr class="subtle my-4">
+      <div class="flex flex-wrap gap-2">
+        {% for s in subjects[:6] %}
+          <a href="{{ url_for('student.search', subject=s.id) }}"
+            class="tag hover:tag-accent transition-colors cursor-pointer">{{ s.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ──────────────────────────────────────────────────────────── -->
+<section class="bg-ink py-10">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 grid grid-cols-3 gap-6 text-center">
+    {% for stat, label in [('5 000+', 'Aktiv müəllim'), ('DİM', 'hazırlıq fokuslu'), ('Pulsuz', 'şagirdlər üçün')] %}
+    <div>
+      <p class="font-display text-3xl text-white mb-1">{{ stat }}</p>
+      <p class="text-sm text-white/50">{{ label }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────────────────── -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-20">
+  <h2 class="font-display text-3xl sm:text-4xl text-ink mb-12 text-center">Necə işləyir</h2>
+  <div class="grid sm:grid-cols-3 gap-8">
+    {% for step, title, body in [
+      ('1', 'Müəllim profili', 'Müəllimlər fənnlərini, iş formatını və qiymətlərini göstərərək profil yaradır.'),
+      ('2', 'Axtarış & kəşf', 'Şagirdlər fənn, format və ərazi üzrə süzgəc tətbiq edərək axtarır.'),
+      ('3', 'Qrupa qoşul', 'Dəvət kodu ilə müəllimin qrupuna qoşul, dərslər başlasın.'),
+    ] %}
+    <div class="card p-6">
+      <div class="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center text-accent font-semibold text-sm mb-4">
+        {{ step }}
+      </div>
+      <h3 class="font-semibold text-ink mb-2">{{ title }}</h3>
+      <p class="text-sm text-ink-60 leading-relaxed">{{ body }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── FEATURED TUTORS ────────────────────────────────────────────────── -->
+{% if featured %}
+<section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  <div class="flex items-center justify-between mb-8">
+    <h2 class="font-display text-3xl text-ink">Son qeydiyyatlar</h2>
+    <a href="{{ url_for('student.search') }}" class="btn btn-ghost btn-sm">Hamısına bax →</a>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for profile in featured %}
+    {% include "tutor/_card.html" %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ── CTA ────────────────────────────────────────────────────────────── -->
+<section class="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
+  <div class="bg-accent rounded-2xl p-10 sm:p-14 text-center text-white">
+    <h2 class="font-display text-3xl sm:text-4xl mb-4">Siz müəllimsiniz?</h2>
+    <p class="text-white/70 text-lg mb-8">Profilinizi yaradın, şagirdlər sizi tapsın.</p>
+    <a href="{{ url_for('auth.register') }}" class="btn bg-white text-accent font-semibold px-8 py-3 text-base hover:bg-accent-light">
+      İndi başla — pulsuzdur
+    </a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
+    <div>
+      <p class="text-sm text-ink-60 mb-1">Xoş gəlmisiniz</p>
+      <h1 class="font-display text-3xl sm:text-4xl text-ink">{{ current_user.full_name }}</h1>
+    </div>
+    <div class="flex gap-2">
+      <a href="{{ url_for('groups.join') }}" class="btn btn-outline">Qrupa qoşul</a>
+      <a href="{{ url_for('student.search') }}" class="btn btn-primary">Müəllim tap</a>
+    </div>
+  </div>
+
+  <h2 class="font-semibold text-ink mb-4">Qruplarım</h2>
+
+  {% if groups %}
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for group in groups %}
+    <a href="{{ url_for('groups.detail', group_id=group.id) }}"
+       class="card p-5 hover:shadow-lift transition-shadow group">
+      <div class="avatar-ring mb-3" style="width:2.5rem;height:2.5rem;font-size:1rem;">
+        {{ group.name[0].upper() }}
+      </div>
+      <p class="font-semibold text-ink group-hover:text-accent transition-colors mb-1">{{ group.name }}</p>
+      <p class="text-sm text-ink-60">{{ group.tutor.full_name }}</p>
+      {% if group.subject %}
+      <span class="tag tag-accent mt-3 text-xs">{{ group.subject.name }}</span>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card p-12 text-center text-ink-60">
+    <p class="text-4xl mb-3">🎓</p>
+    <p class="font-medium mb-1">Hələ qrupa qoşulmamısınız</p>
+    <p class="text-sm mb-6">Müəllimdən dəvət kodu alın və ya axtarışda müəllim tapın.</p>
+    <div class="flex flex-wrap gap-3 justify-center">
+      <a href="{{ url_for('groups.join') }}" class="btn btn-outline btn-sm">Dəvət kodu ilə qoşul</a>
+      <a href="{{ url_for('student.search') }}" class="btn btn-primary btn-sm">Müəllim axtar</a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

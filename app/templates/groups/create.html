@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Qrup Yarat{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+  <div class="flex items-center gap-3 mb-8">
+    <a href="{{ url_for('groups.index') }}" class="btn btn-ghost btn-sm px-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <h1 class="font-display text-3xl text-ink">Yeni qrup yarat</h1>
+  </div>
+
+  <div class="card p-6 sm:p-8">
+    <form method="POST" action="{{ url_for('groups.create') }}" class="space-y-5">
+
+      <div>
+        <label class="lbl" for="name">Qrup adı <span class="text-danger">*</span></label>
+        <input class="field" type="text" id="name" name="name"
+          placeholder="məs. Kimya — DİM hazırlığı" maxlength="120" required />
+      </div>
+
+      <div>
+        <label class="lbl" for="description">Açıqlama</label>
+        <textarea class="field min-h-[100px] resize-y" id="description" name="description"
+          placeholder="Bu qrup kimə görədir, nə öyrəniləcək?"></textarea>
+      </div>
+
+      <div>
+        <label class="lbl" for="subject_id">Fənn</label>
+        <select class="field" id="subject_id" name="subject_id">
+          <option value="">Seçin (ixtiyari)</option>
+          {% for s in subjects %}
+          <option value="{{ s.id }}">{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="lbl" for="max_students">Maksimum şagird sayı</label>
+        <input class="field w-36" type="number" id="max_students" name="max_students"
+          min="1" max="50" value="10" />
+      </div>
+
+      <div class="flex gap-3 justify-end pt-2">
+        <a href="{{ url_for('groups.index') }}" class="btn btn-ghost">Ləğv et</a>
+        <button type="submit" class="btn btn-primary">Qrup yarat</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

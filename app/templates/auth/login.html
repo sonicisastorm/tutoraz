@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Giriş{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <p class="font-display text-3xl text-ink mb-2">Xoş gəlmisiniz</p>
+      <p class="text-sm text-ink-60">Hesabınıza daxil olun</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+      <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-4">
+        <div>
+          <label class="lbl" for="email">E-poçt</label>
+          <input class="field" type="email" id="email" name="email"
+            placeholder="adınız@mail.com" required autocomplete="email" />
+        </div>
+        <div>
+          <label class="lbl" for="password">Şifrə</label>
+          <input class="field" type="password" id="password" name="password"
+            placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="remember" name="remember" class="rounded border-ink-30 text-accent">
+          <label for="remember" class="text-sm text-ink-60">Yadda saxla</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-full mt-2">Daxil ol</button>
+      </form>
+    </div>
+
+    <p class="text-center text-sm text-ink-60 mt-5">
+      Hesabınız yoxdur?
+      <a href="{{ url_for('auth.register') }}" class="text-accent font-medium hover:underline">Qeydiyyat</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

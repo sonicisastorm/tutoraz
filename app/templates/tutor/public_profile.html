@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.user.full_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+
+  <!-- Back -->
+  <a href="{{ url_for('student.search') }}" class="inline-flex items-center gap-1.5 text-sm text-ink-60 hover:text-ink mb-8">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Axtarışa qayıt
+  </a>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+
+    <!-- Main -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <!-- Header card -->
+      <div class="card p-6 sm:p-8">
+        <div class="flex items-start gap-5 mb-5">
+          <div class="avatar-ring lg" style="width:5rem;height:5rem;font-size:1.75rem;">
+            {{ profile.user.full_name[0].upper() }}
+          </div>
+          <div class="min-w-0">
+            <h1 class="font-display text-3xl text-ink mb-1">{{ profile.user.full_name }}</h1>
+            <p class="text-ink-60">{{ profile.headline or 'Müəllim' }}</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              {% if profile.teaches_online %}<span class="tag tag-green">Onlayn</span>{% endif %}
+              {% if profile.teaches_inperson %}<span class="tag">Canlı</span>{% endif %}
+              {% if profile.city %}<span class="tag">{{ profile.city }}{% if profile.district %}, {{ profile.district }}{% endif %}</span>{% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if profile.subjects %}
+        <div class="flex flex-wrap gap-2">
+          {% for s in profile.subjects %}
+          <span class="tag tag-accent">{{ s.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Bio -->
+      {% if profile.bio %}
+      <div class="card p-6">
+        <h2 class="font-semibold text-ink mb-4">Haqqında</h2>
+        <p class="text-ink-60 leading-relaxed whitespace-pre-line">{{ profile.bio }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Experience & Education -->
+      {% if profile.education or profile.years_experience %}
+      <div class="card p-6">
+        <h2 class="font-semibold text-ink mb-4">Bilik & Təcrübə</h2>
+        <div class="space-y-3">
+          {% if profile.years_experience %}
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <p class="text-sm text-ink">{{ profile.years_experience }} il tədris təcrübəsi</p>
+          </div>
+          {% endif %}
+          {% if profile.education %}
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-ink-10 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-ink-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+            </div>
+            <p class="text-sm text-ink">{{ profile.education }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-4">
+      <!-- Pricing -->
+      <div class="card p-5">
+        <p class="text-xs text-ink-60 uppercase tracking-wide font-medium mb-2">Qiymət</p>
+        <p class="font-display text-2xl text-ink">{{ profile.display_rate() }}</p>
+      </div>
+
+      <!-- CTA -->
+      {% if current_user.is_authenticated and current_user.is_student() %}
+      <div class="card p-5">
+        <p class="text-sm font-medium text-ink mb-3">Qrupa qoşulmaq üçün müəllimdən dəvət kodu alın</p>
+        <a href="{{ url_for('groups.join') }}" class="btn btn-primary w-full">Kod ilə qoşul</a>
+      </div>
+      {% elif not current_user.is_authenticated %}
+      <div class="card p-5">
+        <p class="text-sm text-ink-60 mb-3">Qrupa qoşulmaq üçün hesab açın</p>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary w-full">Pulsuz qeydiyyat</a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

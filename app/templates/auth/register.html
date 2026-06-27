@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Qeydiyyat{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <p class="font-display text-3xl text-ink mb-2">Hesab yaradın</p>
+      <p class="text-sm text-ink-60">Pulsuz qeydiyyat — 1 dəqiqəyə başlayın</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+      <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-4">
+
+        <!-- Role selector -->
+        <div>
+          <label class="lbl">Mən...</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="relative cursor-pointer">
+              <input type="radio" name="role" value="student"
+                {% if form_data.get('role','student') == 'student' %}checked{% endif %}
+                class="peer sr-only" />
+              <div class="border rounded-lg p-3 text-center text-sm font-medium transition-all
+                border-ink-10 text-ink-60
+                peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent-light">
+                🎓 Şagirdim
+              </div>
+            </label>
+            <label class="relative cursor-pointer">
+              <input type="radio" name="role" value="tutor"
+                {% if form_data.get('role') == 'tutor' %}checked{% endif %}
+                class="peer sr-only" />
+              <div class="border rounded-lg p-3 text-center text-sm font-medium transition-all
+                border-ink-10 text-ink-60
+                peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent-light">
+                📚 Müəlliməm
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="lbl" for="full_name">Ad Soyad</label>
+          <input class="field" type="text" id="full_name" name="full_name"
+            value="{{ form_data.get('full_name','') }}"
+            placeholder="Leyla Əliyeva" required />
+        </div>
+        <div>
+          <label class="lbl" for="email">E-poçt</label>
+          <input class="field" type="email" id="email" name="email"
+            value="{{ form_data.get('email','') }}"
+            placeholder="adınız@mail.com" required autocomplete="email" />
+        </div>
+        <div>
+          <label class="lbl" for="password">Şifrə</label>
+          <input class="field" type="password" id="password" name="password"
+            placeholder="Ən azı 8 simvol" required autocomplete="new-password" />
+          <p class="text-xs text-ink-60 mt-1">Ən azı 8 simvol</p>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full mt-2">Qeydiyyat</button>
+      </form>
+    </div>
+
+    <p class="text-center text-sm text-ink-60 mt-5">
+      Artıq hesabınız var?
+      <a href="{{ url_for('auth.login') }}" class="text-accent font-medium hover:underline">Daxil olun</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

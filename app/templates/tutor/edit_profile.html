@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Profili Redaktə Et{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+  <div class="flex items-center gap-3 mb-8">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-ghost btn-sm px-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <h1 class="font-display text-3xl text-ink">Profilimi redaktə et</h1>
+  </div>
+
+  <!-- Publish status banner -->
+  {% if not profile.is_published %}
+  <div class="bg-warn/10 border border-warn/20 rounded-xl p-4 mb-6 flex items-start gap-3">
+    <svg class="w-5 h-5 text-warn shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+    </svg>
+    <div>
+      <p class="text-sm font-medium text-warn">Profil hələ gizlidir</p>
+      <p class="text-sm text-ink-60">Başlıq əlavə edib <strong>Yayımla</strong> düyməsini basın.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('tutor.edit_profile') }}" class="space-y-8">
+
+    <!-- Basic Info -->
+    <div class="card p-6 space-y-5">
+      <h2 class="font-semibold text-ink border-b border-ink-10 pb-3">Əsas məlumat</h2>
+
+      <div>
+        <label class="lbl" for="headline">Başlıq <span class="text-danger">*</span></label>
+        <input class="field" type="text" id="headline" name="headline" maxlength="160"
+          value="{{ profile.headline or '' }}"
+          placeholder="məs. Kimya müəllimi · 8 il təcrübə · DİM hazırlığı" />
+        <p class="text-xs text-ink-60 mt-1">Axtarış siyahısında görünəcək qısa başlıq.</p>
+      </div>
+
+      <div>
+        <label class="lbl" for="bio">Haqqınızda</label>
+        <textarea class="field min-h-[140px] resize-y" id="bio" name="bio"
+          placeholder="Özünüz, tədris üslubunuz, uğurlarınız haqqında yazın...">{{ profile.bio or '' }}</textarea>
+      </div>
+
+      <div>
+        <label class="lbl" for="education">Təhsil</label>
+        <input class="field" type="text" id="education" name="education"
+          value="{{ profile.education or '' }}"
+          placeholder="məs. BDU, Kimya fakültəsi" />
+      </div>
+
+      <div>
+        <label class="lbl" for="years_experience">Təcrübə (il)</label>
+        <input class="field w-32" type="number" id="years_experience" name="years_experience"
+          min="0" max="60" value="{{ profile.years_experience or 0 }}" />
+      </div>
+    </div>
+
+    <!-- Subjects -->
+    <div class="card p-6">
+      <h2 class="font-semibold text-ink border-b border-ink-10 pb-3 mb-5">Fənlər</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        {% for subject in all_subjects %}
+        <label class="flex items-center gap-2 p-2.5 rounded-lg border border-ink-10 cursor-pointer
+          hover:border-accent hover:bg-accent-light/50 transition-colors
+          has-[:checked]:border-accent has-[:checked]:bg-accent-light">
+          <input type="checkbox" name="subjects" value="{{ subject.id }}"
+            {% if subject in profile.subjects %}checked{% endif %}
+            class="rounded text-accent border-ink-30 accent-blue-600" />
+          <span class="text-sm">{{ subject.name }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Format & Location -->
+    <div class="card p-6 space-y-5">
+      <h2 class="font-semibold text-ink border-b border-ink-10 pb-3">Format & Yer</h2>
+
+      <div class="flex gap-4">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="teaches_online"
+            {% if profile.teaches_online %}checked{% endif %}
+            class="rounded text-accent accent-blue-600" />
+          <span class="text-sm font-medium">Onlayn</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" name="teaches_inperson"
+            {% if profile.teaches_inperson %}checked{% endif %}
+            class="rounded text-accent accent-blue-600" />
+          <span class="text-sm font-medium">Canlı</span>
+        </label>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="lbl" for="city">Şəhər</label>
+          <input class="field" type="text" id="city" name="city"
+            value="{{ profile.city or 'Bakı' }}" placeholder="Bakı" />
+        </div>
+        <div>
+          <label class="lbl" for="district">Rayon / Məhəllə</label>
+          <input class="field" type="text" id="district" name="district"
+            value="{{ profile.district or '' }}" placeholder="Yasamal, Nərimanov..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="card p-6 space-y-4">
+      <h2 class="font-semibold text-ink border-b border-ink-10 pb-3">Qiymət (AZN / saat)</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="lbl" for="hourly_rate_min">Minimum</label>
+          <input class="field" type="number" id="hourly_rate_min" name="hourly_rate_min"
+            min="1" max="500" value="{{ profile.hourly_rate_min or '' }}" placeholder="10" />
+        </div>
+        <div>
+          <label class="lbl" for="hourly_rate_max">Maksimum</label>
+          <input class="field" type="number" id="hourly_rate_max" name="hourly_rate_max"
+            min="1" max="500" value="{{ profile.hourly_rate_max or '' }}" placeholder="25" />
+        </div>
+      </div>
+      <p class="text-xs text-ink-60">Boş qoyursanız "Razılaşma ilə" göstərilir.</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-wrap gap-3 justify-end">
+      <button type="submit" name="action" value="save" class="btn btn-outline">
+        Yadda saxla
+      </button>
+      {% if not profile.is_published %}
+      <button type="submit" name="action" value="publish" class="btn btn-primary">
+        Yayımla
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </button>
+      {% else %}
+      <span class="tag tag-green flex items-center gap-1.5 px-4">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        Yayımlanıb
+      </span>
+      {% endif %}
+    </div>
+
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Qrupa Qoşul{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <p class="text-4xl mb-3">🔑</p>
+      <h1 class="font-display text-3xl text-ink mb-2">Qrupa qoşul</h1>
+      <p class="text-sm text-ink-60">Müəllimdən aldığınız dəvət kodunu daxil edin</p>
+    </div>
+
+    <div class="card p-6 sm:p-8">
+      <form method="POST" action="{{ url_for('groups.join') }}" class="space-y-4">
+        <div>
+          <label class="lbl" for="code">Dəvət kodu</label>
+          <input class="field text-center font-mono text-xl uppercase tracking-widest"
+            type="text" id="code" name="code"
+            value="{{ code }}"
+            placeholder="AB12CD34"
+            maxlength="12" required
+            oninput="this.value=this.value.toUpperCase()" />
+        </div>
+        <button type="submit" class="btn btn-primary w-full">Qrupa qoşul</button>
+      </form>
+    </div>
+
+    <p class="text-center text-sm text-ink-60 mt-5">
+      <a href="{{ url_for('groups.index') }}" class="text-accent font-medium hover:underline">← Qruplarıma qayıt</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
