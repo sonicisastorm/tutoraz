@@ -1,52 +1,135 @@
 {% extends "base.html" %}
-{% block title %}Qrup Yarat{% endblock %}
+{% block title %}{% if group %}Qrupu Redaktə Et{% else %}Qrup Yarat{% endif %}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-  <div class="flex items-center gap-3 mb-8">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+  <div class="flex items-center gap-3 mb-6 sm:mb-8">
     <a href="{{ url_for('groups.index') }}" class="btn btn-ghost btn-sm px-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     </a>
-    <h1 class="font-display text-3xl text-ink">Yeni qrup yarat</h1>
+    <h1 class="font-display text-2xl sm:text-3xl text-ink">
+      {% if group %}Qrupu redaktə et{% else %}Yeni qrup yarat{% endif %}
+    </h1>
   </div>
 
-  <div class="card p-6 sm:p-8">
-    <form method="POST" action="{{ url_for('groups.create') }}" class="space-y-5">
+  <form method="POST"
+    action="{{ url_for('groups.edit', group_id=group.id) if group else url_for('groups.create') }}"
+    class="space-y-5">
 
+    <!-- Basic info -->
+    <div class="card p-5 sm:p-6 space-y-4">
+      <h2 class="font-semibold text-ink border-b border-ink-10 pb-3">Əsas məlumat</h2>
       <div>
-        <label class="lbl" for="name">Qrup adı <span class="text-danger">*</span></label>
-        <input class="field" type="text" id="name" name="name"
-          placeholder="məs. Kimya — DİM hazırlığı" maxlength="120" required />
+        <label class="lbl">Qrup adı <span class="text-danger">*</span></label>
+        <input class="field" type="text" name="name" maxlength="120" required
+          value="{{ group.name if group else '' }}"
+          placeholder="məs. Kimya — DİM hazırlığı 2025" />
+      </div>
+      <div>
+        <label class="lbl">Açıqlama</label>
+        <textarea class="field min-h-[80px] resize-y" name="description"
+          placeholder="Bu qrup kimə görədir?">{{ group.description if group else '' }}</textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="lbl">Fənn</label>
+          <select class="field" name="subject_id">
+            <option value="">Seçin</option>
+            {% for s in subjects %}
+            <option value="{{ s.id }}" {% if group and group.subject_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="lbl">Maks. şagird</label>
+          <input class="field" type="number" name="max_students" min="1" max="50"
+            value="{{ group.max_students if group else 10 }}" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule slots -->
+    <div class="card p-5 sm:p-6">
+      <div class="flex items-center justify-between border-b border-ink-10 pb-3 mb-4">
+        <h2 class="font-semibold text-ink">Dərs vaxtları</h2>
+        <button type="button" id="add-slot"
+          class="btn btn-outline btn-sm">+ Vaxt əlavə et</button>
       </div>
 
-      <div>
-        <label class="lbl" for="description">Açıqlama</label>
-        <textarea class="field min-h-[100px] resize-y" id="description" name="description"
-          placeholder="Bu qrup kimə görədir, nə öyrəniləcək?"></textarea>
-      </div>
-
-      <div>
-        <label class="lbl" for="subject_id">Fənn</label>
-        <select class="field" id="subject_id" name="subject_id">
-          <option value="">Seçin (ixtiyari)</option>
-          {% for s in subjects %}
-          <option value="{{ s.id }}">{{ s.name }}</option>
+      <div id="slots-container" class="space-y-3">
+        {% if group and group.schedules %}
+          {% for slot in group.schedules %}
+          <div class="slot-row flex flex-wrap sm:flex-nowrap gap-2 items-end">
+            <div class="w-full sm:flex-1">
+              <label class="lbl">Gün</label>
+              <select name="sched_day" class="field">
+                {% for num, name in days %}
+                <option value="{{ num }}" {% if slot.day_of_week == num %}selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="flex-1">
+              <label class="lbl">Başlama</label>
+              <input type="time" name="sched_start" class="field" value="{{ slot.start_time }}" />
+            </div>
+            <div class="flex-1">
+              <label class="lbl">Bitmə</label>
+              <input type="time" name="sched_end" class="field" value="{{ slot.end_time }}" />
+            </div>
+            <button type="button" class="remove-slot btn btn-danger btn-sm mb-0.5 shrink-0">✕</button>
+          </div>
           {% endfor %}
-        </select>
+        {% endif %}
       </div>
 
-      <div>
-        <label class="lbl" for="max_students">Maksimum şagird sayı</label>
-        <input class="field w-36" type="number" id="max_students" name="max_students"
-          min="1" max="50" value="10" />
-      </div>
+      <p class="text-xs text-ink-60 mt-3">Hər həftə təkrarlanan dərs vaxtlarını əlavə edin. Şagirdlər qrupa qoşulduqda bu vaxtlar onların cədvəlinə avtomatik əlavə edilir.</p>
+    </div>
 
-      <div class="flex gap-3 justify-end pt-2">
-        <a href="{{ url_for('groups.index') }}" class="btn btn-ghost">Ləğv et</a>
-        <button type="submit" class="btn btn-primary">Qrup yarat</button>
-      </div>
-
-    </form>
-  </div>
+    <div class="flex gap-3 justify-end">
+      <a href="{{ url_for('groups.index') }}" class="btn btn-ghost">Ləğv et</a>
+      <button type="submit" class="btn btn-primary">
+        {{ 'Yadda saxla' if group else 'Qrup yarat' }}
+      </button>
+    </div>
+  </form>
 </div>
+
+<!-- Slot template (hidden) -->
+<template id="slot-template">
+  <div class="slot-row flex flex-wrap sm:flex-nowrap gap-2 items-end">
+    <div class="w-full sm:flex-1">
+      <label class="lbl">Gün</label>
+      <select name="sched_day" class="field">
+        {% for num, name in days %}
+        <option value="{{ num }}">{{ name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="flex-1">
+      <label class="lbl">Başlama</label>
+      <input type="time" name="sched_start" class="field" value="09:00" />
+    </div>
+    <div class="flex-1">
+      <label class="lbl">Bitmə</label>
+      <input type="time" name="sched_end" class="field" value="10:30" />
+    </div>
+    <button type="button" class="remove-slot btn btn-danger btn-sm mb-0.5 shrink-0">✕</button>
+  </div>
+</template>
+
+<script>
+  const container = document.getElementById('slots-container');
+  const tmpl      = document.getElementById('slot-template');
+
+  document.getElementById('add-slot').addEventListener('click', () => {
+    const clone = tmpl.content.cloneNode(true);
+    container.appendChild(clone);
+  });
+
+  container.addEventListener('click', e => {
+    if (e.target.closest('.remove-slot')) {
+      e.target.closest('.slot-row').remove();
+    }
+  });
+</script>
 {% endblock %}

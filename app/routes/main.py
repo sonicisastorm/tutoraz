@@ -11,14 +11,11 @@ main_bp = Blueprint("main", __name__)
 def index():
     if current_user.is_authenticated:
         return redirect(url_for("main.dashboard"))
-    featured = (
-        TutorProfile.query
-        .filter_by(is_published=True)
-        .join(TutorProfile.user)
-        .order_by(TutorProfile.created_at.desc())
-        .limit(6)
-        .all()
-    )
+    featured = (TutorProfile.query
+                .filter_by(is_published=True)
+                .join(TutorProfile.user)
+                .order_by(TutorProfile.created_at.desc())
+                .limit(6).all())
     subjects = Subject.query.order_by(Subject.name).all()
     return render_template("main/index.html", featured=featured, subjects=subjects)
 
@@ -28,14 +25,11 @@ def index():
 def dashboard():
     if current_user.is_tutor():
         profile = current_user.tutor_profile
-        groups = (
-            Group.query
-            .filter_by(tutor_id=current_user.id, is_active=True)
-            .order_by(Group.created_at.desc())
-            .all()
-        )
+        groups  = (Group.query
+                   .filter_by(tutor_id=current_user.id, is_active=True)
+                   .order_by(Group.created_at.desc()).all())
         return render_template("main/dashboard_tutor.html", profile=profile, groups=groups)
     else:
-        memberships = current_user.group_memberships
-        active_groups = [m.group for m in memberships if m.status == "active" and m.group.is_active]
+        memberships  = current_user.group_memberships
+        active_groups= [m.group for m in memberships if m.status == "active" and m.group.is_active]
         return render_template("main/dashboard_student.html", groups=active_groups)

@@ -2,197 +2,174 @@
 <html lang="az" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>{% block title %}TutorAZ{% endblock %} — TutorAZ</title>
-  <meta name="description" content="{% block meta_description %}Azərbaycanda müəllim tapın. Peşəkar müəllimlərlə əlaqə qurun.{% endblock %}">
-
-  <!-- Tailwind CDN (production: use CLI build) -->
+  <meta name="theme-color" content="#FAF9F7">
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            display: ['Instrument Serif', 'Georgia', 'serif'],
-            body: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Instrument Serif','Georgia','serif'],
+            body:    ['Inter','system-ui','sans-serif'],
           },
           colors: {
-            ink:    { DEFAULT: '#111110', 60: '#6B6B67', 30: '#B8B8B4', 10: '#EBEBEA' },
-            paper:  { DEFAULT: '#FAF9F7', warm: '#F2F0EC' },
-            accent: { DEFAULT: '#2D5BE3', light: '#EEF2FD', dark: '#1A3BAA' },
-            ok:     '#18794E',
-            warn:   '#9E5200',
-            danger: '#CE2C31',
+            ink:   { DEFAULT:'#111110', 60:'#6B6B67', 30:'#B8B8B4', 10:'#EBEBEA' },
+            paper: { DEFAULT:'#FAF9F7', warm:'#F2F0EC' },
+            accent:{ DEFAULT:'#2D5BE3', light:'#EEF2FD', dark:'#1A3BAA' },
+            ok:    '#18794E', warn:'#9E5200', danger:'#CE2C31',
           },
           boxShadow: {
-            card: '0 1px 3px rgba(17,17,16,0.06), 0 0 0 1px rgba(17,17,16,0.05)',
-            lift: '0 4px 16px rgba(17,17,16,0.08), 0 0 0 1px rgba(17,17,16,0.05)',
+            card: '0 1px 3px rgba(17,17,16,0.06),0 0 0 1px rgba(17,17,16,0.05)',
+            lift: '0 4px 20px rgba(17,17,16,0.10),0 0 0 1px rgba(17,17,16,0.05)',
           },
+          screens: { xs:'360px' },
         }
       }
     }
   </script>
 
   <style>
-    body { font-family: 'Inter', system-ui, sans-serif; background: #FAF9F7; color: #111110; }
-    .font-display { font-family: 'Instrument Serif', Georgia, serif; }
+    *{-webkit-tap-highlight-color:transparent;}
+    body{font-family:'Inter',system-ui,sans-serif;background:#FAF9F7;color:#111110;}
+    .font-display{font-family:'Instrument Serif',Georgia,serif;}
 
-    /* Flash messages */
-    .flash-success { background:#ECFDF5; color:#18794E; border:1px solid #86EFAC; }
-    .flash-error   { background:#FEF2F2; color:#CE2C31; border:1px solid #FCA5A5; }
-    .flash-info    { background:#EFF6FF; color:#1D4ED8; border:1px solid #93C5FD; }
+    /* ── Design tokens ────────────────────────────────── */
+    .card{background:#fff;border-radius:.875rem;box-shadow:0 1px 3px rgba(17,17,16,.06),0 0 0 1px rgba(17,17,16,.05);}
+    .field{display:block;width:100%;padding:.625rem .875rem;border:1px solid #DDDDD9;border-radius:.5rem;background:#fff;font-size:.9375rem;transition:border-color .15s;outline:none;}
+    .field:focus{border-color:#2D5BE3;box-shadow:0 0 0 3px rgba(45,91,227,.12);}
+    .field::placeholder{color:#B8B8B4;}
+    select.field{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B6B67' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .75rem center;padding-right:2.5rem;}
+    label.lbl{display:block;font-size:.8125rem;font-weight:500;color:#6B6B67;margin-bottom:.375rem;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.375rem;padding:.625rem 1.25rem;border-radius:.5rem;font-size:.9375rem;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid transparent;white-space:nowrap;touch-action:manipulation;}
+    .btn-primary{background:#2D5BE3;color:#fff;} .btn-primary:hover{background:#1A3BAA;}
+    .btn-outline{background:#fff;color:#111110;border-color:#DDDDD9;} .btn-outline:hover{border-color:#9B9B97;background:#F7F6F4;}
+    .btn-ghost{background:transparent;color:#6B6B67;} .btn-ghost:hover{background:#EBEBEA;color:#111110;}
+    .btn-danger{background:#FEF2F2;color:#CE2C31;border-color:#FCA5A5;} .btn-danger:hover{background:#CE2C31;color:#fff;}
+    .btn-sm{padding:.375rem .875rem;font-size:.8125rem;}
+    .tag{display:inline-block;padding:.25rem .625rem;border-radius:9999px;font-size:.75rem;font-weight:500;background:#EBEBEA;color:#6B6B67;}
+    .tag-accent{background:#EEF2FD;color:#2D5BE3;}
+    .tag-green{background:#ECFDF5;color:#18794E;}
+    .flash-success{background:#ECFDF5;color:#18794E;border:1px solid #86EFAC;}
+    .flash-error{background:#FEF2F2;color:#CE2C31;border:1px solid #FCA5A5;}
+    .flash-info{background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;}
+    hr.subtle{border:none;border-top:1px solid #EBEBEA;}
+    .avatar{width:3.5rem;height:3.5rem;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,#EEF2FD,#DDDDF9);display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:600;color:#2D5BE3;flex-shrink:0;overflow:hidden;}
+    .avatar.lg{width:5rem;height:5rem;font-size:1.75rem;}
+    .avatar img{width:100%;height:100%;object-fit:cover;}
 
-    /* Nav link active */
-    .nav-link { @apply text-sm font-medium text-ink-60 hover:text-ink transition-colors; }
-    .nav-link.active { color: #111110; }
-
-    /* Form inputs */
-    .field {
-      display:block; width:100%; padding:0.625rem 0.875rem;
-      border:1px solid #DDDDD9; border-radius:0.5rem;
-      background:#fff; font-size:0.9375rem;
-      transition: border-color 0.15s;
-      outline:none;
+    /* ── Bottom tab bar (mobile) ──────────────────────── */
+    .bottom-bar{display:none;}
+    @media(max-width:639px){
+      .bottom-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50;background:#fff;border-top:1px solid #EBEBEA;padding-bottom:env(safe-area-inset-bottom);}
+      .main-content{padding-bottom:5rem;}
     }
-    .field:focus { border-color: #2D5BE3; box-shadow: 0 0 0 3px rgba(45,91,227,0.12); }
-    .field::placeholder { color:#B8B8B4; }
+    .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.5rem .25rem;gap:.2rem;font-size:.625rem;font-weight:500;color:#6B6B67;text-decoration:none;transition:color .15s;}
+    .tab-item.active,.tab-item:active{color:#2D5BE3;}
+    .tab-item svg{width:1.375rem;height:1.375rem;}
 
-    label.lbl { display:block; font-size:0.8125rem; font-weight:500; color:#6B6B67; margin-bottom:0.375rem; }
-
-    /* Buttons */
-    .btn {
-      display:inline-flex; align-items:center; justify-content:center; gap:0.375rem;
-      padding:0.625rem 1.25rem; border-radius:0.5rem;
-      font-size:0.9375rem; font-weight:500; cursor:pointer;
-      transition: all 0.15s; border:1px solid transparent; white-space:nowrap;
-    }
-    .btn-primary  { background:#2D5BE3; color:#fff; }
-    .btn-primary:hover  { background:#1A3BAA; }
-    .btn-outline  { background:#fff; color:#111110; border-color:#DDDDD9; }
-    .btn-outline:hover  { border-color:#9B9B97; background:#F7F6F4; }
-    .btn-ghost    { background:transparent; color:#6B6B67; }
-    .btn-ghost:hover    { background:#EBEBEA; color:#111110; }
-    .btn-danger   { background:#FEF2F2; color:#CE2C31; border-color:#FCA5A5; }
-    .btn-danger:hover   { background:#CE2C31; color:#fff; }
-    .btn-sm { padding:0.375rem 0.875rem; font-size:0.8125rem; }
-
-    /* Tag/badge */
-    .tag {
-      display:inline-block; padding:0.25rem 0.625rem; border-radius:9999px;
-      font-size:0.75rem; font-weight:500;
-      background:#EBEBEA; color:#6B6B67;
-    }
-    .tag-accent { background:#EEF2FD; color:#2D5BE3; }
-    .tag-green  { background:#ECFDF5; color:#18794E; }
-
-    /* Card */
-    .card {
-      background:#fff; border-radius:0.875rem;
-      box-shadow: 0 1px 3px rgba(17,17,16,0.06), 0 0 0 1px rgba(17,17,16,0.05);
-    }
-
-    /* Divider */
-    hr.subtle { border:none; border-top:1px solid #EBEBEA; }
-
-    /* Avatar placeholder */
-    .avatar-ring {
-      width:3.5rem; height:3.5rem; border-radius:50%;
-      background: linear-gradient(135deg,#EEF2FD,#DDDDF9);
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.25rem; font-weight:600; color:#2D5BE3; flex-shrink:0;
-    }
-    .avatar-ring.lg { width:5rem; height:5rem; font-size:1.75rem; }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width:6px; }
-    ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:#DDDDD9; border-radius:3px; }
+    /* scrollbar */
+    ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:#DDDDD9;border-radius:3px;}
   </style>
-
   {% block head_extra %}{% endblock %}
 </head>
 
 <body class="min-h-screen flex flex-col">
 
-  <!-- ── NAV ──────────────────────────────────────────────────────────── -->
-  <header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-sm border-b border-ink-10">
-    <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
-      <a href="{{ url_for('main.index') }}" class="font-display text-xl text-ink tracking-tight shrink-0">
-        TutorAZ
-      </a>
-
-      <div class="flex items-center gap-1 sm:gap-2">
-        {% if current_user.is_authenticated %}
-          <a href="{{ url_for('student.search') }}" class="nav-link hidden sm:block px-3 py-1.5 rounded-lg hover:bg-ink-10">Müəllim tap</a>
-          <a href="{{ url_for('groups.index') }}" class="nav-link hidden sm:block px-3 py-1.5 rounded-lg hover:bg-ink-10">Qruplar</a>
-          <a href="{{ url_for('main.dashboard') }}" class="nav-link hidden sm:block px-3 py-1.5 rounded-lg hover:bg-ink-10">Ana səhifə</a>
-
-          <!-- Mobile menu trigger (simple dropdown) -->
-          <div class="relative sm:hidden" x-data="{open:false}">
-            <button onclick="this.nextElementSibling.classList.toggle('hidden')"
-              class="btn btn-ghost btn-sm px-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            </button>
-            <div class="hidden absolute right-0 top-10 w-48 card p-1 shadow-lift">
-              <a href="{{ url_for('student.search') }}" class="block px-3 py-2 text-sm rounded-lg hover:bg-ink-10">Müəllim tap</a>
-              <a href="{{ url_for('groups.index') }}" class="block px-3 py-2 text-sm rounded-lg hover:bg-ink-10">Qruplar</a>
-              <a href="{{ url_for('main.dashboard') }}" class="block px-3 py-2 text-sm rounded-lg hover:bg-ink-10">Ana səhifə</a>
-              <hr class="subtle my-1">
-              <a href="{{ url_for('auth.logout') }}" class="block px-3 py-2 text-sm rounded-lg text-danger hover:bg-red-50">Çıxış</a>
-            </div>
-          </div>
-
-          <a href="{{ url_for('auth.logout') }}" class="btn btn-outline btn-sm hidden sm:inline-flex">Çıxış</a>
-        {% else %}
-          <a href="{{ url_for('student.search') }}" class="nav-link px-3 py-1.5 rounded-lg hover:bg-ink-10 hidden sm:block">Müəllim tap</a>
-          <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm">Giriş</a>
-          <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Qeydiyyat</a>
-        {% endif %}
-      </div>
-    </nav>
-  </header>
-
-  <!-- ── FLASH ─────────────────────────────────────────────────────────── -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-4 space-y-2">
-        {% for category, message in messages %}
-          <div class="flash-{{ category }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
-            {% if category == 'success' %}
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-            {% elif category == 'error' %}
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-            {% else %}
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
-            {% endif %}
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
-
-  <!-- ── MAIN ──────────────────────────────────────────────────────────── -->
-  <main class="flex-1">
-    {% block content %}{% endblock %}
-  </main>
-
-  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
-  <footer class="border-t border-ink-10 mt-16 py-8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-ink-60">
-      <span class="font-display text-base text-ink">TutorAZ</span>
-      <p>Azərbaycanda müəllimlər üçün platforma</p>
-      <p>© {{ 2025 }}</p>
+<!-- ── DESKTOP / TABLET NAV ──────────────────────────────────────────── -->
+<header class="sticky top-0 z-40 bg-paper/90 backdrop-blur-sm border-b border-ink-10 hidden sm:block">
+  <nav class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+    <a href="{{ url_for('main.index') }}" class="font-display text-xl text-ink tracking-tight shrink-0">TutorAZ</a>
+    <div class="flex items-center gap-1">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('student.search') }}" class="px-3 py-1.5 text-sm font-medium text-ink-60 hover:text-ink rounded-lg hover:bg-ink-10 transition-colors">Axtar</a>
+        <a href="{{ url_for('groups.schedule') }}" class="px-3 py-1.5 text-sm font-medium text-ink-60 hover:text-ink rounded-lg hover:bg-ink-10 transition-colors">Cədvəl</a>
+        <a href="{{ url_for('groups.index') }}" class="px-3 py-1.5 text-sm font-medium text-ink-60 hover:text-ink rounded-lg hover:bg-ink-10 transition-colors">Qruplar</a>
+        <a href="{{ url_for('main.dashboard') }}" class="px-3 py-1.5 text-sm font-medium text-ink-60 hover:text-ink rounded-lg hover:bg-ink-10 transition-colors">Əsas</a>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline btn-sm ml-2">Çıxış</a>
+      {% else %}
+        <a href="{{ url_for('student.search') }}" class="px-3 py-1.5 text-sm font-medium text-ink-60 hover:text-ink rounded-lg hover:bg-ink-10">Müəllim tap</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm">Giriş</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Qeydiyyat</a>
+      {% endif %}
     </div>
-  </footer>
+  </nav>
+</header>
+
+<!-- ── MOBILE TOP BAR ─────────────────────────────────────────────────── -->
+<header class="sticky top-0 z-40 bg-paper/90 backdrop-blur-sm border-b border-ink-10 sm:hidden">
+  <div class="h-14 flex items-center justify-between px-4">
+    <a href="{{ url_for('main.index') }}" class="font-display text-lg text-ink">TutorAZ</a>
+    {% if not current_user.is_authenticated %}
+    <div class="flex gap-2">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-ghost btn-sm">Giriş</a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Qeydiyyat</a>
+    </div>
+    {% else %}
+    <span class="text-sm text-ink-60 truncate max-w-[160px]">{{ current_user.full_name }}</span>
+    {% endif %}
+  </div>
+</header>
+
+<!-- ── FLASH ──────────────────────────────────────────────────────────── -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-3 space-y-2 z-30 relative">
+    {% for category, message in messages %}
+    <div class="flash-{{ category }} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+      {% if category=='success' %}<svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      {% else %}<svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01"/></svg>{% endif %}
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<!-- ── MAIN ───────────────────────────────────────────────────────────── -->
+<main class="flex-1 main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ── DESKTOP FOOTER ─────────────────────────────────────────────────── -->
+<footer class="hidden sm:block border-t border-ink-10 mt-16 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-ink-60">
+    <span class="font-display text-base text-ink">TutorAZ</span>
+    <p>Azərbaycanda müəllimlər üçün platforma</p>
+    <p>© 2025</p>
+  </div>
+</footer>
+
+<!-- ── MOBILE BOTTOM TAB BAR ──────────────────────────────────────────── -->
+{% if current_user.is_authenticated %}
+<nav class="bottom-bar">
+  <a href="{{ url_for('main.dashboard') }}" class="tab-item {% if request.endpoint in ('main.dashboard',) %}active{% endif %}">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+    Əsas
+  </a>
+  <a href="{{ url_for('student.search') }}" class="tab-item {% if request.endpoint in ('student.search',) %}active{% endif %}">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/></svg>
+    Axtar
+  </a>
+  <a href="{{ url_for('groups.schedule') }}" class="tab-item {% if request.endpoint in ('groups.schedule',) %}active{% endif %}">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/></svg>
+    Cədvəl
+  </a>
+  <a href="{{ url_for('groups.index') }}" class="tab-item {% if request.endpoint and request.endpoint.startswith('groups.') and request.endpoint != 'groups.schedule' %}active{% endif %}">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+    Qruplar
+  </a>
+  <a href="{{ url_for('auth.logout') }}" class="tab-item">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+    Çıxış
+  </a>
+</nav>
+{% endif %}
 
 </body>
 </html>

@@ -1,37 +1,37 @@
 <a href="{{ url_for('tutor.public_profile', tutor_id=profile.id) }}"
-   class="card p-5 flex flex-col gap-3 hover:shadow-lift transition-shadow group">
+   class="card p-4 sm:p-5 flex flex-col gap-3 hover:shadow-lift transition-all duration-200 group active:scale-[0.99]">
   <div class="flex items-start gap-3">
-    <div class="avatar-ring shrink-0">
+    <div class="avatar shrink-0">
+      {% if profile.avatar_url %}
+      <img src="{{ profile.avatar_url }}" alt="{{ profile.user.full_name }}" />
+      {% else %}
       {{ profile.user.full_name[0].upper() }}
+      {% endif %}
     </div>
     <div class="min-w-0">
       <p class="font-semibold text-ink truncate group-hover:text-accent transition-colors">
         {{ profile.user.full_name }}
       </p>
-      <p class="text-sm text-ink-60 truncate">{{ profile.headline or 'Müəllim' }}</p>
+      <p class="text-sm text-ink-60 line-clamp-1">{{ profile.headline or 'Müəllim' }}</p>
     </div>
   </div>
 
   {% if profile.subjects %}
   <div class="flex flex-wrap gap-1.5">
-    {% for s in profile.subjects[:4] %}
+    {% for s in profile.subjects[:3] %}
     <span class="tag tag-accent">{{ s.name }}</span>
     {% endfor %}
-    {% if profile.subjects|length > 4 %}
-    <span class="tag">+{{ profile.subjects|length - 4 }}</span>
+    {% if profile.subjects|length > 3 %}
+    <span class="tag">+{{ profile.subjects|length - 3 }}</span>
     {% endif %}
   </div>
   {% endif %}
 
-  <div class="flex items-center justify-between pt-1">
-    <p class="text-sm text-ink-60">{{ profile.display_rate() }}</p>
-    <div class="flex gap-1.5">
-      {% if profile.teaches_online %}
-      <span class="tag tag-green text-xs">Onlayn</span>
-      {% endif %}
-      {% if profile.teaches_inperson %}
-      <span class="tag text-xs">Canlı</span>
-      {% endif %}
+  <div class="flex items-center justify-between pt-1 gap-2">
+    <p class="text-sm text-ink-60 truncate">{{ profile.display_rate() }}</p>
+    <div class="flex gap-1.5 shrink-0">
+      {% if profile.teaches_online %}<span class="tag tag-green text-[11px]">Onlayn</span>{% endif %}
+      {% if profile.teaches_inperson %}<span class="tag text-[11px]">Canlı</span>{% endif %}
     </div>
   </div>
 </a>

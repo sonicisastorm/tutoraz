@@ -2,19 +2,18 @@
 {% block title %}Müəllim Axtar{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-  <!-- Header -->
-  <div class="mb-8">
-    <h1 class="font-display text-4xl text-ink mb-2">Müəllim tap</h1>
-    <p class="text-ink-60">{{ total }} müəllim tapıldı</p>
+  <div class="mb-6">
+    <h1 class="font-display text-2xl sm:text-4xl text-ink mb-1">Müəllim tap</h1>
+    <p class="text-sm text-ink-60">{{ total }} müəllim tapıldı</p>
   </div>
 
-  <!-- Search bar + filters -->
-  <form method="GET" action="{{ url_for('student.search') }}" class="mb-8">
-    <div class="flex flex-col sm:flex-row gap-3">
+  <form method="GET" action="{{ url_for('student.search') }}" class="mb-6 sm:mb-8">
+    <!-- Search bar -->
+    <div class="flex gap-2 mb-3">
       <div class="relative flex-1">
-        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-30"
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-30 pointer-events-none"
           fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
         </svg>
@@ -24,43 +23,39 @@
       <button type="submit" class="btn btn-primary shrink-0">Axtar</button>
     </div>
 
-    <!-- Filter row -->
-    <div class="flex flex-wrap gap-2 mt-3">
-      <select name="subject" onchange="this.form.submit()" class="field text-sm w-auto">
+    <!-- Filter chips — horizontally scrollable on mobile -->
+    <div class="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+      <select name="subject" onchange="this.form.submit()"
+        class="field text-sm shrink-0 w-auto min-w-[140px]">
         <option value="">Bütün fənlər</option>
         {% for s in subjects %}
         <option value="{{ s.id }}" {% if subject_id == s.id %}selected{% endif %}>{{ s.name }}</option>
         {% endfor %}
       </select>
-
-      <select name="mode" onchange="this.form.submit()" class="field text-sm w-auto">
+      <select name="mode" onchange="this.form.submit()"
+        class="field text-sm shrink-0 w-auto min-w-[130px]">
         <option value="">İstənilən format</option>
         <option value="online"   {% if mode=='online' %}selected{% endif %}>Onlayn</option>
         <option value="inperson" {% if mode=='inperson' %}selected{% endif %}>Canlı</option>
       </select>
-
-      <input name="city" type="text" value="{{ city }}"
-        class="field text-sm w-auto" placeholder="Şəhər..."
-        onblur="this.form.submit()" />
-
-      {% if q or subject_id or mode or city %}
-      <a href="{{ url_for('student.search') }}" class="btn btn-ghost btn-sm">Süzgəci sıfırla</a>
+      {% if q or subject_id or mode %}
+      <a href="{{ url_for('student.search') }}"
+        class="btn btn-ghost btn-sm shrink-0 whitespace-nowrap">✕ Sıfırla</a>
       {% endif %}
     </div>
   </form>
 
-  <!-- Results grid -->
   {% if tutors %}
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {% for profile in tutors %}
     {% include "tutor/_card.html" %}
     {% endfor %}
   </div>
   {% else %}
-  <div class="card p-16 text-center text-ink-60">
+  <div class="card p-12 text-center text-ink-60">
     <p class="text-4xl mb-4">🔍</p>
     <p class="font-medium text-ink mb-2">Nəticə tapılmadı</p>
-    <p class="text-sm mb-5">Axtarış parametrlərini dəyişməyə çalışın.</p>
+    <p class="text-sm mb-5">Axtarış parametrlərini dəyişin.</p>
     <a href="{{ url_for('student.search') }}" class="btn btn-outline btn-sm">Süzgəci sıfırla</a>
   </div>
   {% endif %}

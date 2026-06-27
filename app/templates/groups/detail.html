@@ -2,64 +2,84 @@
 {% block title %}{{ group.name }}{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
 
-  <!-- Back -->
-  <a href="{{ url_for('groups.index') }}" class="inline-flex items-center gap-1.5 text-sm text-ink-60 hover:text-ink mb-8">
+  <a href="{{ url_for('groups.index') }}"
+    class="inline-flex items-center gap-1.5 text-sm text-ink-60 hover:text-ink mb-6">
     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     Qruplara qayıt
   </a>
 
-  <div class="grid lg:grid-cols-3 gap-8">
+  <div class="grid lg:grid-cols-3 gap-5">
 
-    <!-- Main info -->
-    <div class="lg:col-span-2 space-y-6">
-      <div class="card p-6">
+    <!-- Main -->
+    <div class="lg:col-span-2 space-y-5">
+
+      <!-- Header -->
+      <div class="card p-5 sm:p-6">
         <div class="flex items-start justify-between gap-3 mb-2">
-          <h1 class="font-display text-3xl text-ink">{{ group.name }}</h1>
-          {% if group.is_active %}
-          <span class="tag tag-green shrink-0">Aktiv</span>
-          {% else %}
-          <span class="tag shrink-0">Bağlı</span>
-          {% endif %}
+          <h1 class="font-display text-2xl sm:text-3xl text-ink">{{ group.name }}</h1>
+          <span class="tag {% if group.is_active %}tag-green{% endif %} shrink-0 mt-1">
+            {{ 'Aktiv' if group.is_active else 'Bağlı' }}
+          </span>
         </div>
         <p class="text-sm text-ink-60 mb-4">
           Müəllim: <span class="font-medium text-ink">{{ group.tutor.full_name }}</span>
           {% if group.subject %}· {{ group.subject.name }}{% endif %}
         </p>
         {% if group.description %}
-        <p class="text-ink-60 leading-relaxed">{{ group.description }}</p>
+        <p class="text-sm text-ink-60 leading-relaxed">{{ group.description }}</p>
+        {% endif %}
+        {% if current_user.id == group.tutor_id %}
+        <div class="mt-4 pt-4 border-t border-ink-10">
+          <a href="{{ url_for('groups.edit', group_id=group.id) }}" class="btn btn-outline btn-sm">Qrupu redaktə et</a>
+        </div>
         {% endif %}
       </div>
 
+      <!-- Schedule -->
+      {% if group.schedules %}
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-semibold text-ink mb-4">Dərs vaxtları</h2>
+        <div class="space-y-2">
+          {% for slot in group.schedules %}
+          <div class="flex items-center gap-3 p-3 rounded-lg bg-paper-warm">
+            <div class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></div>
+            <span class="text-sm font-medium text-ink w-36 shrink-0">{{ slot.day_name }}</span>
+            <span class="text-sm font-mono text-ink-60">{{ slot.start_time }} – {{ slot.end_time }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
       <!-- Members -->
-      <div class="card p-6">
-        <div class="flex items-center justify-between mb-5">
+      <div class="card p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4">
           <h2 class="font-semibold text-ink">
-            Şagirdlər
-            <span class="text-ink-60 font-normal">{{ group.member_count }}/{{ group.max_students }}</span>
+            Şagirdlər <span class="text-ink-60 font-normal text-sm">{{ group.member_count }}/{{ group.max_students }}</span>
           </h2>
         </div>
 
-        {% set active_members = group.members | selectattr('status', 'equalto', 'active') | list %}
+        {% set active_members = group.members | selectattr('status','equalto','active') | list %}
         {% if active_members %}
         <div class="divide-y divide-ink-10">
           {% for member in active_members %}
-          <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-            <div class="flex items-center gap-3">
-              <div class="avatar-ring" style="width:2.25rem;height:2.25rem;font-size:0.875rem;">
+          <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0 gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="avatar shrink-0" style="width:2.25rem;height:2.25rem;font-size:.875rem;">
                 {{ member.student.full_name[0].upper() }}
               </div>
-              <div>
-                <p class="text-sm font-medium text-ink">{{ member.student.full_name }}</p>
-                <p class="text-xs text-ink-60">{{ member.joined_at.strftime('%d.%m.%Y') }} tarixindən</p>
+              <div class="min-w-0">
+                <p class="text-sm font-medium text-ink truncate">{{ member.student.full_name }}</p>
+                <p class="text-xs text-ink-60">{{ member.joined_at.strftime('%d.%m.%Y') }}</p>
               </div>
             </div>
             {% if current_user.id == group.tutor_id %}
             <form method="POST"
               action="{{ url_for('groups.remove_student', group_id=group.id, student_id=member.student_id) }}"
-              onsubmit="return confirm('Bu şagirdi qrupdan çıxarmaq istəyirsiniz?')">
-              <button type="submit" class="btn btn-danger btn-sm">Çıxar</button>
+              onsubmit="return confirm('Çıxarılsın?')">
+              <button type="submit" class="btn btn-danger btn-sm shrink-0">Çıxar</button>
             </form>
             {% endif %}
           </div>
@@ -76,20 +96,18 @@
 
     <!-- Sidebar -->
     <div class="space-y-4">
-      <!-- Invite code -->
       {% if current_user.id == group.tutor_id %}
       <div class="card p-5">
         <p class="text-xs text-ink-60 uppercase tracking-wide font-medium mb-3">Dəvət kodu</p>
-        <div class="bg-ink-10 rounded-lg p-3 text-center mb-3">
-          <p class="font-mono text-2xl font-bold text-accent tracking-wider">{{ group.invite_code }}</p>
+        <div class="bg-ink-10 rounded-xl p-4 text-center mb-3">
+          <p class="font-mono text-2xl font-bold text-accent tracking-widest">{{ group.invite_code }}</p>
         </div>
-        <p class="text-xs text-ink-60 text-center">Bu kodu şagirdlərlə paylaşın.</p>
-        <button onclick="navigator.clipboard.writeText('{{ group.invite_code }}').then(()=>this.textContent='Kopyalandı ✓')"
-          class="btn btn-outline btn-sm w-full mt-3">Kopyala</button>
+        <p class="text-xs text-ink-60 text-center mb-3">Bu kodu şagirdlərlə paylaşın</p>
+        <button onclick="navigator.clipboard.writeText('{{ group.invite_code }}').then(()=>{this.textContent='Kopyalandı ✓';setTimeout(()=>this.textContent='Kopyala',2000)})"
+          class="btn btn-outline btn-sm w-full">Kopyala</button>
       </div>
       {% endif %}
 
-      <!-- Stats -->
       <div class="card p-5">
         <div class="grid grid-cols-2 gap-4 text-center">
           <div>
@@ -97,13 +115,12 @@
             <p class="text-xs text-ink-60 mt-0.5">Şagird</p>
           </div>
           <div>
-            <p class="text-2xl font-semibold text-ink">{{ group.max_students }}</p>
-            <p class="text-xs text-ink-60 mt-0.5">Limit</p>
+            <p class="text-2xl font-semibold text-ink">{{ group.schedules|length }}</p>
+            <p class="text-xs text-ink-60 mt-0.5">Dərs vaxtı</p>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 {% endblock %}
