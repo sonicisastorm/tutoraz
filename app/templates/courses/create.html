@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Kurs Yarat{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+  <div class="flex items-center gap-3 mb-6 sm:mb-8">
+    <a href="{{ url_for('courses.my_courses') }}" class="btn btn-ghost btn-sm px-2">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <h1 class="font-display text-2xl sm:text-3xl text-ink">Yeni kurs yarat</h1>
+  </div>
+
+  <form method="POST" action="{{ url_for('courses.create') }}" enctype="multipart/form-data" class="card p-5 sm:p-6 space-y-5">
+    <div>
+      <label class="lbl">Kurs adı <span class="text-danger">*</span></label>
+      <input class="field" type="text" name="title" maxlength="160" required
+        placeholder="məs. Fizika — Optika tam kursu" />
+    </div>
+
+    <div>
+      <label class="lbl">Açıqlama</label>
+      <textarea class="field min-h-[100px] resize-y" name="description"
+        placeholder="Bu kursda nə öyrədiləcək?"></textarea>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="lbl">Fənn</label>
+        <select class="field" name="subject_id">
+          <option value="">Seçin</option>
+          {% for s in subjects %}
+          <option value="{{ s.id }}">{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="lbl">Qiymət (AZN)</label>
+        <input class="field" type="number" name="price_azn" min="0" max="1000" step="1" placeholder="0" />
+        <p class="text-xs text-ink-60 mt-1">0 = pulsuz kurs</p>
+      </div>
+    </div>
+
+    <div>
+      <label class="lbl">Üz qapağı (thumbnail)</label>
+      <input class="field" type="file" name="thumbnail" accept="image/*" />
+    </div>
+
+    <div class="bg-accent-light rounded-lg p-3 flex items-start gap-2.5">
+      <svg class="w-4 h-4 text-accent shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01"/></svg>
+      <p class="text-xs text-accent">Kursu yaratdıqdan sonra bölmələr və dərslər əlavə edəcəksiniz. Ödənişli kurs üçün ödəniş hesabı qoşulması tələb olunur.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-full">Kursu yarat</button>
+  </form>
+</div>
+{% endblock %}

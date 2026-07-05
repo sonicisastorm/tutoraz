@@ -25,6 +25,12 @@ class User(UserMixin, db.Model):
     group_memberships = db.relationship(
         "GroupMember", back_populates="student", cascade="all, delete-orphan"
     )
+    courses = db.relationship(
+        "Course", back_populates="tutor", foreign_keys="Course.tutor_id", cascade="all, delete-orphan"
+    )
+    purchases = db.relationship(
+        "Purchase", back_populates="student", foreign_keys="Purchase.student_id", cascade="all, delete-orphan"
+    )
 
     def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)

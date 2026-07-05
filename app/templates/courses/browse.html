@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Kurslar{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+  <div class="mb-6">
+    <h1 class="font-display text-2xl sm:text-4xl text-ink mb-1">Kurslar</h1>
+    <p class="text-sm text-ink-60">{{ total }} kurs tapıldı</p>
+  </div>
+
+  <form method="GET" action="{{ url_for('courses.browse') }}" class="mb-6 sm:mb-8">
+    <div class="flex gap-2 mb-3">
+      <div class="relative flex-1">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-30 pointer-events-none"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
+        </svg>
+        <input name="q" type="text" value="{{ q }}" class="field pl-10" placeholder="Kurs adı..." />
+      </div>
+      <button type="submit" class="btn btn-primary shrink-0">Axtar</button>
+    </div>
+    <div class="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+      <select name="subject" onchange="this.form.submit()" class="field text-sm shrink-0 w-auto min-w-[140px]">
+        <option value="">Bütün fənlər</option>
+        {% for s in subjects %}
+        <option value="{{ s.id }}" {% if subject_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+      {% if q or subject_id %}
+      <a href="{{ url_for('courses.browse') }}" class="btn btn-ghost btn-sm shrink-0">✕ Sıfırla</a>
+      {% endif %}
+    </div>
+  </form>
+
+  {% if courses %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for course in courses %}
+    <a href="{{ url_for('courses.detail', course_id=course.id) }}"
+       class="card overflow-hidden hover:shadow-lift transition-all duration-200 active:scale-[0.99] group">
+      <div class="aspect-video bg-ink-10 flex items-center justify-center overflow-hidden">
+        {% if course.thumbnail_url %}
+        <img src="{{ course.thumbnail_url }}" alt="{{ course.title }}" class="w-full h-full object-cover" />
+        {% else %}
+        <span class="text-3xl">📚</span>
+        {% endif %}
+      </div>
+      <div class="p-4">
+        <p class="font-semibold text-ink group-hover:text-accent transition-colors line-clamp-2 mb-1">{{ course.title }}</p>
+        <p class="text-sm text-ink-60 mb-3">{{ course.tutor.full_name }}</p>
+        <div class="flex items-center justify-between">
+          {% if course.subject %}<span class="tag tag-accent">{{ course.subject.name }}</span>{% else %}<span></span>{% endif %}
+          <span class="font-display text-lg text-ink">{{ course.price_display() }}</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card p-12 text-center text-ink-60">
+    <p class="text-4xl mb-4">📚</p>
+    <p class="font-medium text-ink mb-2">Hələ kurs yoxdur</p>
+    <p class="text-sm">Tezliklə müəllimlərimiz kurslarını əlavə edəcək.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

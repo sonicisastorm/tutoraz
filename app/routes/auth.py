@@ -81,3 +81,22 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
+
+
+@auth_bp.route("/account/delete", methods=["GET", "POST"])
+@login_required
+def delete_account():
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        if not current_user.check_password(password):
+            flash("Şifrə yanlışdır.", "error")
+            return render_template("auth/delete_account.html")
+
+        user = User.query.get(current_user.id)
+        logout_user()
+        db.session.delete(user)  # cascades to tutor_profile, courses, groups, purchases, memberships
+        db.session.commit()
+        flash("Hesabınız silindi.", "success")
+        return redirect(url_for("main.index"))
+
+    return render_template("auth/delete_account.html")

@@ -93,5 +93,12 @@ def edit_profile():
 
 @tutor_bp.route("/<int:tutor_id>")
 def public_profile(tutor_id):
+    from app.models.course import Course  # local import avoids circular import at module load
     profile = TutorProfile.query.filter_by(id=tutor_id, is_published=True).first_or_404()
-    return render_template("tutor/public_profile.html", profile=profile)
+    courses = (
+        Course.query
+        .filter_by(tutor_id=profile.user_id, is_published=True)
+        .order_by(Course.created_at.desc())
+        .all()
+    )
+    return render_template("tutor/public_profile.html", profile=profile, courses=courses)

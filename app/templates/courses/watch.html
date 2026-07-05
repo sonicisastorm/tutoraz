@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+  <a href="{{ url_for('courses.detail', course_id=course.id) }}"
+    class="inline-flex items-center gap-1.5 text-sm text-ink-60 hover:text-ink mb-6">
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    {{ course.title }}
+  </a>
+
+  <div class="card overflow-hidden mb-5">
+    {% if lesson.video_url %}
+    <video controls class="w-full aspect-video bg-black" src="{{ lesson.video_url }}"></video>
+    {% else %}
+    <div class="aspect-video bg-ink-10 flex items-center justify-center text-ink-60 text-sm">
+      Video hələ yüklənməyib
+    </div>
+    {% endif %}
+    <div class="p-5">
+      <h1 class="font-display text-xl sm:text-2xl text-ink mb-1">{{ lesson.title }}</h1>
+      <p class="text-sm text-ink-60">{{ lesson.section.title }}</p>
+    </div>
+  </div>
+
+  {% if lesson.homework %}
+  <div class="card p-5 sm:p-6">
+    <h2 class="font-semibold text-ink mb-4">Ödəv materialları</h2>
+    <div class="flex flex-wrap gap-3">
+      {% if lesson.homework.sheet_url %}
+      <a href="{{ lesson.homework.sheet_url }}" target="_blank" class="btn btn-outline btn-sm">
+        📄 Ödəv vərəqi
+      </a>
+      {% endif %}
+      {% if lesson.homework.answer_url %}
+      <a href="{{ lesson.homework.answer_url }}" target="_blank" class="btn btn-outline btn-sm">
+        ✅ Cavab vərəqi
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

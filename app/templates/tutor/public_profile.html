@@ -74,6 +74,27 @@
         </div>
       </div>
       {% endif %}
+
+      <!-- Courses -->
+      {% if courses %}
+      <div class="card p-5 sm:p-6">
+        <h2 class="font-semibold text-ink mb-4">Kurslar</h2>
+        <div class="space-y-3">
+          {% for c in courses %}
+          <a href="{{ url_for('courses.detail', course_id=c.id) }}"
+            class="flex items-center justify-between gap-3 p-3 rounded-lg border border-ink-10 hover:border-accent hover:bg-accent-light/30 transition-colors">
+            <div class="min-w-0">
+              <p class="font-medium text-ink truncate">{{ c.title }}</p>
+              <p class="text-xs text-ink-60 mt-0.5">{{ c.total_duration_label }}</p>
+            </div>
+            <span class="tag {% if c.is_free %}tag-green{% else %}tag-accent{% endif %} shrink-0">
+              {{ c.price_display() }}
+            </span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
     </div>
 
     <!-- Sidebar -->

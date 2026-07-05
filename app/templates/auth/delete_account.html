@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Hesabı sil{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <p class="font-display text-3xl text-ink mb-2">Hesabı sil</p>
+      <p class="text-sm text-ink-60">Bu əməliyyat geri qaytarıla bilməz</p>
+    </div>
+
+    <div class="card p-6 sm:p-8 border border-danger/30">
+      <div class="mb-5 text-sm text-ink-60 leading-relaxed">
+        <p class="font-semibold text-ink mb-2">Hesabınızı sildikdə aşağıdakılar da həmişəlik silinəcək:</p>
+        {% if current_user.is_tutor() %}
+        <ul class="list-disc list-inside space-y-1">
+          <li>Bütün yaratdığınız kurslar (bölmələr, dərslər, ev tapşırıqları)</li>
+          <li>Bütün yaratdığınız qruplar və üzvlük məlumatları</li>
+          <li>Müəllim profiliniz və Stripe qoşulma məlumatı</li>
+        </ul>
+        {% else %}
+        <ul class="list-disc list-inside space-y-1">
+          <li>Bütün qrup üzvlükləriniz</li>
+          <li>Satın aldığınız kurslara giriş qeydləriniz</li>
+        </ul>
+        {% endif %}
+      </div>
+
+      <form method="POST" action="{{ url_for('auth.delete_account') }}" class="space-y-4">
+        <div>
+          <label class="lbl" for="password">Təsdiq üçün şifrənizi daxil edin</label>
+          <input class="field" type="password" id="password" name="password"
+            placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-danger w-full mt-2"
+          onclick="return confirm('Hesabınızı silmək istədiyinizə əminsiniz? Bu geri qaytarıla bilməz.');">
+          Hesabı həmişəlik sil
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-sm text-ink-60 mt-5">
+      <a href="{{ url_for('main.dashboard') }}" class="text-accent font-medium hover:underline">Ləğv et, geri qayıt</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

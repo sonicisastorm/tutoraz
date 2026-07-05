@@ -39,6 +39,10 @@ class TutorProfile(db.Model):
     is_published = db.Column(db.Boolean, default=False)
     is_featured  = db.Column(db.Boolean, default=False)
 
+    # Stripe Connect (Express) — only set once tutor opts into course creation
+    stripe_account_id           = db.Column(db.String(255))   # acct_...
+    stripe_onboarding_complete   = db.Column(db.Boolean, default=False)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -54,3 +58,6 @@ class TutorProfile(db.Model):
 
     def avatar(self):
         return self.avatar_url or None
+
+    def can_sell_courses(self):
+        return bool(self.stripe_onboarding_complete)
