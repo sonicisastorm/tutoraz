@@ -74,7 +74,6 @@ tutoraz/
 
 ## Future (Anti-Roadmap)
 
-When validated, add in order:
 - Rating & review system
 - Lesson scheduling
 - In-app messaging
