@@ -1,6 +1,6 @@
 # TutorAZ MVP
 
-All-in-one tutor platform for Azerbaijan — tutor profiles, student search, group management.
+All-in-one tutor platform for Azerbaijan — tutor profiles, student search, group management, course creation.
 
 ## Stack
 
@@ -24,24 +24,6 @@ Tutors can package recorded lessons into paid or free courses:
 - Payouts via **Stripe Connect Express** — platform takes a configurable % fee, rest goes straight to tutor's connected account
 - Bank details are never stored by us — Stripe's hosted onboarding handles that
 
-### ⚠️ Critical: video storage before going live
-
-Course videos currently save to local disk (`app/static/uploads/`) for local development. **This will NOT work on Render or any host with ephemeral disk** — uploaded videos disappear on every redeploy/restart. Before launching:
-
-1. Create an AWS S3 bucket + CloudFront distribution (or use Cloudflare R2/Stream as a cheaper alternative)
-2. Set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_S3_BUCKET`, `AWS_CLOUDFRONT_DOMAIN` env vars
-3. Edit `app/storage.py` — the `save_file()`/`delete_file()` functions have the S3 swap-in code commented right above them
-
-Until that's done, treat course video upload as **demo-only** — good enough to show the flow at Demo Day, not production-safe.
-
-## Stripe test mode setup
-
-1. Create a free account at [stripe.com](https://stripe.com) (no business verification needed for test mode)
-2. Dashboard → Developers → API keys → copy the **test** publishable + secret keys
-3. Add them to `.env` locally, and to Render's environment variables in production
-4. Test card for checkout: `4242 4242 4242 4242`, any future expiry, any CVC
-5. For Stripe Connect testing, tutor onboarding uses Stripe's test-mode hosted form — no real bank account needed
-
 ## Local Setup
 
 ```bash
@@ -64,14 +46,6 @@ flask db upgrade
 python run.py
 # → http://localhost:5000
 ```
-
-## Deploy to Render
-
-1. Push code to GitHub
-2. Go to [render.com](https://render.com) → New → Blueprint
-3. Connect your repo — Render reads `render.yaml` automatically
-4. Set `SECRET_KEY` in Render dashboard (or it auto-generates)
-5. Deploy → done ✓
 
 ## Project Structure
 
