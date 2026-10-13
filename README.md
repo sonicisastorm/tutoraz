@@ -8,7 +8,7 @@ All-in-one tutor platform for Azerbaijan — tutor profiles, student search, gro
 
 🌐 **Live site:** [https://tutoraz.onrender.com/](https://tutoraz.onrender.com/)
 
-![TutorAZ homepage](docs/homepage.png)
+![TutorAZ homepage](docs/newhome.png)
 ## Stack
 
 - **Backend**: Flask 3 + SQLAlchemy + Flask-Migrate
