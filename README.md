@@ -2,6 +2,8 @@
 
 All-in-one tutor platform for Azerbaijan — tutor profiles, student search, group management, course creation.
 
+🌐 **Live site:** [https://tutoraz.onrender.com/](https://tutoraz.onrender.com/)
+
 ## Stack
 
 - **Backend**: Flask 3 + SQLAlchemy + Flask-Migrate
@@ -48,36 +50,3 @@ python run.py
 ```
 
 ## Project Structure
-
-```
-tutoraz/
-├── app/
-│   ├── __init__.py          # App factory
-│   ├── models/
-│   │   ├── user.py          # User (tutor + student)
-│   │   ├── tutor.py         # TutorProfile, Subject
-│   │   └── group.py         # Group, GroupMember
-│   ├── routes/
-│   │   ├── auth.py          # Register / Login / Logout
-│   │   ├── main.py          # Landing + Dashboard
-│   │   ├── tutor.py         # Profile edit + public view
-│   │   ├── student.py       # Search
-│   │   └── groups.py        # Group CRUD + join
-│   └── templates/           # Jinja2 templates
-├── tests/
-├── migrations/
-├── render.yaml              # Render deployment config
-├── gunicorn.conf.py
-├── requirements.txt
-└── run.py
-```
-
-## Future (Anti-Roadmap)
-
-- Rating & review system
-- Lesson scheduling
-- In-app messaging
-- File sharing / homework
-- Payment integration (Stripe / local gateway)
-- Verified DIM results
-- Mobile app (Flutter)
