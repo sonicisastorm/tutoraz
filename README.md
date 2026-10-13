@@ -1,9 +1,14 @@
+<p align="center">
+  <img src="docs/logo-long.svg" alt="TutorAZ logo" width="400">
+</p>
+
 # TutorAZ MVP
 
 All-in-one tutor platform for Azerbaijan — tutor profiles, student search, group management, course creation.
 
 🌐 **Live site:** [https://tutoraz.onrender.com/](https://tutoraz.onrender.com/)
 
+![TutorAZ homepage](docs/homepage.png)
 ## Stack
 
 - **Backend**: Flask 3 + SQLAlchemy + Flask-Migrate
